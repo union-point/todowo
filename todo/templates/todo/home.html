@@ -1,0 +1,19 @@
+{%extends 'todo/base.html'%} 
+
+{% block content%} 
+
+{%if user.is_authenticated%} 
+	{{todolist}}
+{%else%}
+	<h1>Login</h1>
+	<h2>{{error }}</h2>
+	<form method="POST">
+		{{form.as_p }} {%csrf_token%}
+		<button type="submit">Login</button>
+	</form>
+	<a href="{%url 'signupuser'%}">Sign up</a>
+{%endif%}
+
+
+{%endblock%}
+
