@@ -3,12 +3,20 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.contrib.auth import login, logout,authenticate
-
+from .forms import TodoForm
+from .models import Todo
 
 def home(req):
     if req.user.is_authenticated:
-        return render(req, 'todo/home.html',{'todolist':'sdgasdgasdgasdgsdga'})
-
+        if req.method == 'GET':
+            todos=Todo.objects.all()
+            return render(req,'todo/home.html',{'form':TodoForm(),'todos':todos})
+        else:
+            form = TodoForm(req.POST)
+            newtodo = form.save(commit=False)
+            newtodo.user = req.user
+            newtodo.save()
+            return redirect('home')
     if req.method == 'GET':
         return render(req, 'todo/home.html',{'form': AuthenticationForm()})
     else:
